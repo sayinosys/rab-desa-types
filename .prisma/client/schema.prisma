@@ -1,0 +1,449 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum HistoriType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum HistoriModel {
+  User
+  Company
+  Option
+  Unit
+  Item
+  Work
+  WorkItems
+  Template
+  Image
+  File
+}
+
+model Histori {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  type        HistoriType
+  model       HistoriModel
+  step        Int?
+  message     String?
+  ref         User         @relation("histori_user_tracker", fields: [refId], references: [id])
+  refId       String       @db.ObjectId
+  createdAt   DateTime     @default(now())
+  user        User?        @relation(fields: [userId], references: [id])
+  userId      String?      @db.ObjectId
+  company     Company?     @relation(fields: [companyId], references: [id])
+  companyId   String?      @db.ObjectId
+  option      Option?      @relation(fields: [optionId], references: [id])
+  optionId    String?      @db.ObjectId
+  unit        Unit?        @relation(fields: [unitId], references: [id])
+  unitId      String?      @db.ObjectId
+  item        Item?        @relation(fields: [itemId], references: [id])
+  itemId      String?      @db.ObjectId
+  work        Work?        @relation(fields: [workId], references: [id])
+  workId      String?      @db.ObjectId
+  workItems   WorkItems?   @relation(fields: [workItemsId], references: [id])
+  workItemsId String?      @db.ObjectId
+  template    Template?    @relation(fields: [templateId], references: [id])
+  templateId  String?      @db.ObjectId
+  image       Image?       @relation(fields: [imageId], references: [id])
+  imageId     String?      @db.ObjectId
+  file        File?        @relation(fields: [fileId], references: [id])
+  fileId      String?      @db.ObjectId
+
+  @@index([model])
+  @@map("historys")
+}
+
+type Coordinate {
+  longitude Float
+  latitude  Float
+}
+
+type Address {
+  provinsi   String
+  kabupaten  String
+  kecamatan  String
+  kelurahan  String
+  kodepos    String
+  jalan      String
+  coordinate Coordinate?
+}
+
+type TPhone {
+  code   String
+  number Int
+}
+
+model Company {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  address  Address
+  phone    TPhone?
+  users    User[]
+  historis Histori[]
+
+  @@map("companys")
+}
+
+enum UserRole {
+  SU
+  ADM
+  USR
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  username  String    @unique
+  password  String
+  passhash  String
+  role      UserRole
+  active    Boolean
+  company   Company?  @relation(fields: [companyId], references: [id])
+  companyId String?   @db.ObjectId
+  trackers  Histori[] @relation("histori_user_tracker")
+  historis  Histori[]
+
+  @@map("users")
+}
+
+model File {
+  id       String          @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  url      String
+  size     Int
+  width    Int
+  height   Int
+  type     String
+  group    Image           @relation(fields: [groupId], references: [id])
+  groupId  String          @db.ObjectId
+  historis Histori[]
+  fields   TemplateField[]
+
+  @@map("files")
+}
+
+model Image {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  files    File[]
+  historis Histori[]
+
+  @@map("images")
+}
+
+enum OptionType {
+  CATEGORY
+  TYPE
+  WORK
+  GROUP
+}
+
+model Option {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  type          OptionType
+  code          String?
+  name          String
+  itemCategorys Item[]     @relation("option_item_category")
+  itemTypes     Item[]     @relation("option_item_type")
+  workTypes     Work[]     @relation("option_work_type")
+  historis      Histori[]
+
+  @@unique([type, name], map: "option_type_name")
+  @@index([name], map: "option_name")
+  @@map("options")
+}
+
+model Unit {
+  id         String             @id @default(auto()) @map("_id") @db.ObjectId
+  name       String             @unique
+  items      Item[]
+  works      Work[]
+  workItems  WorkItems[]
+  historis   Histori[]
+  tWorkItems TemplateWorkItem[]
+
+  @@map("units")
+}
+
+enum ItemModel {
+  UPAH
+  ALAT
+  BAHAN
+  MULAI
+}
+
+model Item {
+  id         String             @id @default(auto()) @map("_id") @db.ObjectId
+  // iid        Int            @unique
+  model      ItemModel
+  category   Option             @relation("option_item_category", fields: [categoryId], references: [id])
+  categoryId String             @db.ObjectId
+  type       Option?            @relation("option_item_type", fields: [typeId], references: [id])
+  typeId     String?            @db.ObjectId
+  unit       Unit               @relation(fields: [unitId], references: [id])
+  unitId     String             @db.ObjectId
+  code       String?
+  name       String?
+  price      Int
+  trim       Boolean
+  active     Boolean
+  works      WorkItems[]
+  historis   Histori[]
+  introIds   String[]           @db.ObjectId
+  tWorks     TemplateWorkItem[]
+
+  @@index([model])
+  @@map("items")
+}
+
+enum WorkModel {
+  UMUM
+  CIPTA_KARYA
+  BINA_MARGA
+  SDA
+  CUSTOM
+}
+
+model Work {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  // iid      Int         @unique
+  model     WorkModel
+  code      String
+  name      String
+  active    Boolean
+  type      Option         @relation("option_work_type", fields: [typeId], references: [id])
+  typeId    String         @db.ObjectId
+  unit      Unit           @relation(fields: [unitId], references: [id])
+  unitId    String         @db.ObjectId
+  items     WorkItems[]
+  historis  Histori[]
+  templates TemplateWork[]
+
+  @@index([model])
+  @@map("works")
+}
+
+model WorkItems {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  model       WorkModel
+  work        Work      @relation(fields: [workId], references: [id])
+  workId      String    @db.ObjectId
+  item        Item      @relation(fields: [itemId], references: [id])
+  itemId      String    @db.ObjectId
+  coefficient Float
+  unit        Unit?     @relation(fields: [unitId], references: [id])
+  unitId      String?   @db.ObjectId
+  historis    Histori[]
+
+  @@index([model])
+  @@map("work_items")
+}
+
+model Template {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  name     String         @unique
+  active   TemplateData?  @relation("template_active", fields: [activeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  activeId String?        @unique @db.ObjectId
+  records  TemplateData[] @relation("template_data_record")
+  historis Histori[]
+
+  @@map("templates")
+}
+
+model TemplateWorkItem {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  type        ItemModel
+  item        Item         @relation(fields: [itemId], references: [id])
+  itemId      String       @db.ObjectId
+  coefficient Float
+  unit        Unit         @relation(fields: [unitId], references: [id])
+  unitId      String       @db.ObjectId
+  parent      TemplateWork @relation(fields: [parentId], references: [id])
+  parentId    String       @db.ObjectId
+
+  @@unique([parentId, itemId])
+  @@map("templates_works_items")
+}
+
+model TemplateWork {
+  id     String             @id @default(auto()) @map("_id") @db.ObjectId
+  data   TemplateData       @relation(fields: [dataId], references: [id])
+  dataId String             @db.ObjectId
+  work   Work               @relation(fields: [workId], references: [id])
+  workId String             @db.ObjectId
+  items  TemplateWorkItem[]
+  stages Stage[]
+
+  @@map("templates_works")
+}
+
+type TPropertyPrice {
+  type        ItemModel
+  itemId      String    @db.ObjectId
+  workIds     String[]  @db.ObjectId
+  coefficient Float
+  rounding    Int
+  price       Int
+  pph         Boolean
+  ppn         Boolean
+}
+
+type TPropertyIntro {
+  itemId String @db.ObjectId
+  qty    Int
+}
+
+type TProperty {
+  images String?          @db.ObjectId
+  intros TPropertyIntro[]
+  prices TPropertyPrice[]
+  pph    Boolean          @default(true)
+  ppn    Boolean          @default(true)
+  pphVal Int              @default(5)
+  ppnVal Int              @default(11)
+}
+
+model TemplateData {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  step       Int             @default(0)
+  publish    Boolean         @default(false)
+  active     Template?       @relation("template_active")
+  template   Template        @relation("template_data_record", fields: [templateId], references: [id])
+  templateId String          @db.ObjectId
+  spaces     Space[]
+  works      TemplateWork[]
+  properties TProperty
+  deds       TemplateDED[]
+  fields     TemplateField[]
+
+  @@map("templates_data")
+}
+
+enum EFieldType {
+  long
+  height
+  width
+  amount
+}
+
+type TFieldList {
+  id   String     @db.ObjectId
+  name String
+  type EFieldType
+}
+
+model TemplateField {
+  id       String       @id @default(auto()) @map("_id") @db.ObjectId
+  data     TemplateData @relation(fields: [dataId], references: [id])
+  dataId   String       @db.ObjectId
+  name     String
+  image    File?        @relation(fields: [imageId], references: [id])
+  imageId  String?      @db.ObjectId
+  imageUrl String?
+  lists    TFieldList[]
+
+  @@map("templates_fields")
+}
+
+type TDeDList {
+  id       String @db.ObjectId
+  filename String
+  name     String
+  url      String
+  size     Int
+  width    Int
+  height   Int
+  top      Int
+  left     Int
+  type     String
+}
+
+model TemplateDED {
+  id     String       @id @default(auto()) @map("_id") @db.ObjectId
+  data   TemplateData @relation(fields: [dataId], references: [id])
+  dataId String       @db.ObjectId
+  name   String
+  lists  TDeDList[]
+
+  @@map("templates_ded")
+}
+
+type TValues {
+  around Float
+  broad  Float
+  volume Float
+}
+
+type SpaceValue {
+  fixed Boolean
+  value Float
+  min   Float
+  max   Float
+}
+
+model Space {
+  id     String       @id @default(auto()) @map("_id") @db.ObjectId
+  ref    TemplateData @relation(fields: [refId], references: [id])
+  refId  String       @db.ObjectId
+  name   String
+  long   SpaceValue
+  width  SpaceValue
+  height SpaceValue
+  amount SpaceValue
+  values TValues
+
+  @@map("spaces")
+}
+
+enum StageOpr {
+  PLUS
+  MINUS
+  TIMES
+  FOR
+}
+
+enum StageType {
+  LONG
+  HEIGHT
+  WIDTH
+  AMOUNT
+  AROUND
+  BROAD
+  VOLUME
+}
+
+type StageValue {
+  ref   String? @db.ObjectId
+  refal Float?
+  value Float
+}
+
+model Stage {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  work      TemplateWork @relation(fields: [workId], references: [id])
+  workId    String       @db.ObjectId
+  type      StageType
+  operation StageOpr
+  parentId  String?      @db.ObjectId
+  refs      String?      @db.ObjectId
+  refParent Boolean?     @default(false)
+  name      String?
+  long      StageValue
+  width     StageValue
+  height    StageValue
+  amount    StageValue
+  values    TValues
+
+  @@map("stages")
+}

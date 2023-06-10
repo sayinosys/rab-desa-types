@@ -1,0 +1,19 @@
+{
+  "name": "rab-desa-types",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "browser": "index-browser.js",
+  "scripts": {
+    "test": "echo \"No test specified\""
+  },
+  "files": [
+    ".prisma",
+    "index.js",
+    "index.d.ts",
+    "index-browser.js"
+  ],
+  "author": "",
+  "license": "ISC"
+}
