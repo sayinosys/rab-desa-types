@@ -88,7 +88,17 @@ Prisma.NullTypes = {
 
 exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  gid: 'gid',
+  name: 'name',
+  limit: 'limit'
+};
+
+exports.Prisma.DeviceScalarFieldEnum = {
+  id: 'id',
+  uuid: 'uuid',
+  model: 'model',
+  manufacturer: 'manufacturer',
+  userId: 'userId'
 };
 
 exports.Prisma.FileScalarFieldEnum = {
@@ -325,6 +335,7 @@ exports.WorkModel = {
 
 exports.Prisma.ModelName = {
   Histori: 'Histori',
+  Device: 'Device',
   Company: 'Company',
   User: 'User',
   File: 'File',

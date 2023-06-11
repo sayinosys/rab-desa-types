@@ -165,14 +165,28 @@ export type Histori = {
 }
 
 /**
+ * Model Device
+ * 
+ */
+export type Device = {
+  id: string
+  uuid: string
+  model: string
+  manufacturer: string
+  userId: string
+}
+
+/**
  * Model Company
  * 
  */
 export type Company = {
   id: string
+  gid: string | null
   name: string
   address: Address
   phone: TPhone | null
+  limit: number
 }
 
 /**
@@ -582,6 +596,16 @@ export class PrismaClient<
     * ```
     */
   get histori(): Prisma.HistoriDelegate<GlobalReject>;
+
+  /**
+   * `prisma.device`: Exposes CRUD operations for the **Device** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Devices
+    * const devices = await prisma.device.findMany()
+    * ```
+    */
+  get device(): Prisma.DeviceDelegate<GlobalReject>;
 
   /**
    * `prisma.company`: Exposes CRUD operations for the **Company** model.
@@ -1222,6 +1246,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Histori: 'Histori',
+    Device: 'Device',
     Company: 'Company',
     User: 'User',
     File: 'File',
@@ -1452,11 +1477,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     trackers: number
     historis: number
+    devices: number
   }
 
   export type UserCountOutputTypeSelect = {
     trackers?: boolean
     historis?: boolean
+    devices?: boolean
   }
 
   export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs> =
@@ -4283,46 +4310,1063 @@ export namespace Prisma {
 
 
   /**
+   * Model Device
+   */
+
+
+  export type AggregateDevice = {
+    _count: DeviceCountAggregateOutputType | null
+    _min: DeviceMinAggregateOutputType | null
+    _max: DeviceMaxAggregateOutputType | null
+  }
+
+  export type DeviceMinAggregateOutputType = {
+    id: string | null
+    uuid: string | null
+    model: string | null
+    manufacturer: string | null
+    userId: string | null
+  }
+
+  export type DeviceMaxAggregateOutputType = {
+    id: string | null
+    uuid: string | null
+    model: string | null
+    manufacturer: string | null
+    userId: string | null
+  }
+
+  export type DeviceCountAggregateOutputType = {
+    id: number
+    uuid: number
+    model: number
+    manufacturer: number
+    userId: number
+    _all: number
+  }
+
+
+  export type DeviceMinAggregateInputType = {
+    id?: true
+    uuid?: true
+    model?: true
+    manufacturer?: true
+    userId?: true
+  }
+
+  export type DeviceMaxAggregateInputType = {
+    id?: true
+    uuid?: true
+    model?: true
+    manufacturer?: true
+    userId?: true
+  }
+
+  export type DeviceCountAggregateInputType = {
+    id?: true
+    uuid?: true
+    model?: true
+    manufacturer?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type DeviceAggregateArgs = {
+    /**
+     * Filter which Device to aggregate.
+     */
+    where?: DeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Devices to fetch.
+     */
+    orderBy?: Enumerable<DeviceOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Devices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Devices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Devices
+    **/
+    _count?: true | DeviceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeviceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeviceMaxAggregateInputType
+  }
+
+  export type GetDeviceAggregateType<T extends DeviceAggregateArgs> = {
+        [P in keyof T & keyof AggregateDevice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDevice[P]>
+      : GetScalarType<T[P], AggregateDevice[P]>
+  }
+
+
+
+
+  export type DeviceGroupByArgs = {
+    where?: DeviceWhereInput
+    orderBy?: Enumerable<DeviceOrderByWithAggregationInput>
+    by: DeviceScalarFieldEnum[]
+    having?: DeviceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeviceCountAggregateInputType | true
+    _min?: DeviceMinAggregateInputType
+    _max?: DeviceMaxAggregateInputType
+  }
+
+
+  export type DeviceGroupByOutputType = {
+    id: string
+    uuid: string
+    model: string
+    manufacturer: string
+    userId: string
+    _count: DeviceCountAggregateOutputType | null
+    _min: DeviceMinAggregateOutputType | null
+    _max: DeviceMaxAggregateOutputType | null
+  }
+
+  type GetDeviceGroupByPayload<T extends DeviceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickArray<DeviceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeviceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeviceGroupByOutputType[P]>
+            : GetScalarType<T[P], DeviceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeviceSelect = {
+    id?: boolean
+    uuid?: boolean
+    model?: boolean
+    manufacturer?: boolean
+    userId?: boolean
+    user?: boolean | UserArgs
+  }
+
+
+  export type DeviceInclude = {
+    user?: boolean | UserArgs
+  }
+
+  export type DeviceGetPayload<S extends boolean | null | undefined | DeviceArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Device :
+    S extends undefined ? never :
+    S extends { include: any } & (DeviceArgs | DeviceFindManyArgs)
+    ? Device  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'user' ? UserGetPayload<S['include'][P]> :  never
+  } 
+    : S extends { select: any } & (DeviceArgs | DeviceFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'user' ? UserGetPayload<S['select'][P]> :  P extends keyof Device ? Device[P] : never
+  } 
+      : Device
+
+
+  type DeviceCountArgs = 
+    Omit<DeviceFindManyArgs, 'select' | 'include'> & {
+      select?: DeviceCountAggregateInputType | true
+    }
+
+  export interface DeviceDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+    /**
+     * Find zero or one Device that matches the filter.
+     * @param {DeviceFindUniqueArgs} args - Arguments to find a Device
+     * @example
+     * // Get one Device
+     * const device = await prisma.device.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends DeviceFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, DeviceFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Device'> extends True ? Prisma__DeviceClient<DeviceGetPayload<T>> : Prisma__DeviceClient<DeviceGetPayload<T> | null, null>
+
+    /**
+     * Find one Device that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {DeviceFindUniqueOrThrowArgs} args - Arguments to find a Device
+     * @example
+     * // Get one Device
+     * const device = await prisma.device.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends DeviceFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, DeviceFindUniqueOrThrowArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Find the first Device that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceFindFirstArgs} args - Arguments to find a Device
+     * @example
+     * // Get one Device
+     * const device = await prisma.device.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends DeviceFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, DeviceFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Device'> extends True ? Prisma__DeviceClient<DeviceGetPayload<T>> : Prisma__DeviceClient<DeviceGetPayload<T> | null, null>
+
+    /**
+     * Find the first Device that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceFindFirstOrThrowArgs} args - Arguments to find a Device
+     * @example
+     * // Get one Device
+     * const device = await prisma.device.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends DeviceFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, DeviceFindFirstOrThrowArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Find zero or more Devices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Devices
+     * const devices = await prisma.device.findMany()
+     * 
+     * // Get first 10 Devices
+     * const devices = await prisma.device.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deviceWithIdOnly = await prisma.device.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends DeviceFindManyArgs>(
+      args?: SelectSubset<T, DeviceFindManyArgs>
+    ): Prisma.PrismaPromise<Array<DeviceGetPayload<T>>>
+
+    /**
+     * Create a Device.
+     * @param {DeviceCreateArgs} args - Arguments to create a Device.
+     * @example
+     * // Create one Device
+     * const Device = await prisma.device.create({
+     *   data: {
+     *     // ... data to create a Device
+     *   }
+     * })
+     * 
+    **/
+    create<T extends DeviceCreateArgs>(
+      args: SelectSubset<T, DeviceCreateArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Create many Devices.
+     *     @param {DeviceCreateManyArgs} args - Arguments to create many Devices.
+     *     @example
+     *     // Create many Devices
+     *     const device = await prisma.device.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends DeviceCreateManyArgs>(
+      args?: SelectSubset<T, DeviceCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Device.
+     * @param {DeviceDeleteArgs} args - Arguments to delete one Device.
+     * @example
+     * // Delete one Device
+     * const Device = await prisma.device.delete({
+     *   where: {
+     *     // ... filter to delete one Device
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends DeviceDeleteArgs>(
+      args: SelectSubset<T, DeviceDeleteArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Update one Device.
+     * @param {DeviceUpdateArgs} args - Arguments to update one Device.
+     * @example
+     * // Update one Device
+     * const device = await prisma.device.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends DeviceUpdateArgs>(
+      args: SelectSubset<T, DeviceUpdateArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Delete zero or more Devices.
+     * @param {DeviceDeleteManyArgs} args - Arguments to filter Devices to delete.
+     * @example
+     * // Delete a few Devices
+     * const { count } = await prisma.device.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends DeviceDeleteManyArgs>(
+      args?: SelectSubset<T, DeviceDeleteManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Devices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Devices
+     * const device = await prisma.device.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends DeviceUpdateManyArgs>(
+      args: SelectSubset<T, DeviceUpdateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Device.
+     * @param {DeviceUpsertArgs} args - Arguments to update or create a Device.
+     * @example
+     * // Update or create a Device
+     * const device = await prisma.device.upsert({
+     *   create: {
+     *     // ... data to create a Device
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Device we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends DeviceUpsertArgs>(
+      args: SelectSubset<T, DeviceUpsertArgs>
+    ): Prisma__DeviceClient<DeviceGetPayload<T>>
+
+    /**
+     * Find zero or more Devices that matches the filter.
+     * @param {DeviceFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const device = await prisma.device.findRaw({
+     *   filter: { age: { $gt: 25 } } 
+     * })
+    **/
+    findRaw(
+      args?: DeviceFindRawArgs
+    ): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a Device.
+     * @param {DeviceAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const device = await prisma.device.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+    **/
+    aggregateRaw(
+      args?: DeviceAggregateRawArgs
+    ): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Count the number of Devices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceCountArgs} args - Arguments to filter Devices to count.
+     * @example
+     * // Count the number of Devices
+     * const count = await prisma.device.count({
+     *   where: {
+     *     // ... the filter for the Devices we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeviceCountArgs>(
+      args?: Subset<T, DeviceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeviceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Device.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeviceAggregateArgs>(args: Subset<T, DeviceAggregateArgs>): Prisma.PrismaPromise<GetDeviceAggregateType<T>>
+
+    /**
+     * Group by Device.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeviceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeviceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeviceGroupByArgs['orderBy'] }
+        : { orderBy?: DeviceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeviceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeviceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Device.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__DeviceClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+    user<T extends UserArgs= {}>(args?: Subset<T, UserArgs>): Prisma__UserClient<UserGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Device base type for findUnique actions
+   */
+  export type DeviceFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter, which Device to fetch.
+     */
+    where: DeviceWhereUniqueInput
+  }
+
+  /**
+   * Device findUnique
+   */
+  export interface DeviceFindUniqueArgs extends DeviceFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Device findUniqueOrThrow
+   */
+  export type DeviceFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter, which Device to fetch.
+     */
+    where: DeviceWhereUniqueInput
+  }
+
+
+  /**
+   * Device base type for findFirst actions
+   */
+  export type DeviceFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter, which Device to fetch.
+     */
+    where?: DeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Devices to fetch.
+     */
+    orderBy?: Enumerable<DeviceOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Devices.
+     */
+    cursor?: DeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Devices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Devices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Devices.
+     */
+    distinct?: Enumerable<DeviceScalarFieldEnum>
+  }
+
+  /**
+   * Device findFirst
+   */
+  export interface DeviceFindFirstArgs extends DeviceFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Device findFirstOrThrow
+   */
+  export type DeviceFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter, which Device to fetch.
+     */
+    where?: DeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Devices to fetch.
+     */
+    orderBy?: Enumerable<DeviceOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Devices.
+     */
+    cursor?: DeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Devices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Devices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Devices.
+     */
+    distinct?: Enumerable<DeviceScalarFieldEnum>
+  }
+
+
+  /**
+   * Device findMany
+   */
+  export type DeviceFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter, which Devices to fetch.
+     */
+    where?: DeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Devices to fetch.
+     */
+    orderBy?: Enumerable<DeviceOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Devices.
+     */
+    cursor?: DeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Devices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Devices.
+     */
+    skip?: number
+    distinct?: Enumerable<DeviceScalarFieldEnum>
+  }
+
+
+  /**
+   * Device create
+   */
+  export type DeviceCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * The data needed to create a Device.
+     */
+    data: XOR<DeviceCreateInput, DeviceUncheckedCreateInput>
+  }
+
+
+  /**
+   * Device createMany
+   */
+  export type DeviceCreateManyArgs = {
+    /**
+     * The data used to create many Devices.
+     */
+    data: Enumerable<DeviceCreateManyInput>
+  }
+
+
+  /**
+   * Device update
+   */
+  export type DeviceUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * The data needed to update a Device.
+     */
+    data: XOR<DeviceUpdateInput, DeviceUncheckedUpdateInput>
+    /**
+     * Choose, which Device to update.
+     */
+    where: DeviceWhereUniqueInput
+  }
+
+
+  /**
+   * Device updateMany
+   */
+  export type DeviceUpdateManyArgs = {
+    /**
+     * The data used to update Devices.
+     */
+    data: XOR<DeviceUpdateManyMutationInput, DeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which Devices to update
+     */
+    where?: DeviceWhereInput
+  }
+
+
+  /**
+   * Device upsert
+   */
+  export type DeviceUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * The filter to search for the Device to update in case it exists.
+     */
+    where: DeviceWhereUniqueInput
+    /**
+     * In case the Device found by the `where` argument doesn't exist, create a new Device with this data.
+     */
+    create: XOR<DeviceCreateInput, DeviceUncheckedCreateInput>
+    /**
+     * In case the Device was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeviceUpdateInput, DeviceUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Device delete
+   */
+  export type DeviceDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    /**
+     * Filter which Device to delete.
+     */
+    where: DeviceWhereUniqueInput
+  }
+
+
+  /**
+   * Device deleteMany
+   */
+  export type DeviceDeleteManyArgs = {
+    /**
+     * Filter which Devices to delete
+     */
+    where?: DeviceWhereInput
+  }
+
+
+  /**
+   * Device findRaw
+   */
+  export type DeviceFindRawArgs = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+
+  /**
+   * Device aggregateRaw
+   */
+  export type DeviceAggregateRawArgs = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+
+  /**
+   * Device without action
+   */
+  export type DeviceArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+  }
+
+
+
+  /**
    * Model Company
    */
 
 
   export type AggregateCompany = {
     _count: CompanyCountAggregateOutputType | null
+    _avg: CompanyAvgAggregateOutputType | null
+    _sum: CompanySumAggregateOutputType | null
     _min: CompanyMinAggregateOutputType | null
     _max: CompanyMaxAggregateOutputType | null
   }
 
+  export type CompanyAvgAggregateOutputType = {
+    limit: number | null
+  }
+
+  export type CompanySumAggregateOutputType = {
+    limit: number | null
+  }
+
   export type CompanyMinAggregateOutputType = {
     id: string | null
+    gid: string | null
     name: string | null
+    limit: number | null
   }
 
   export type CompanyMaxAggregateOutputType = {
     id: string | null
+    gid: string | null
     name: string | null
+    limit: number | null
   }
 
   export type CompanyCountAggregateOutputType = {
     id: number
+    gid: number
     name: number
+    limit: number
     _all: number
   }
 
 
+  export type CompanyAvgAggregateInputType = {
+    limit?: true
+  }
+
+  export type CompanySumAggregateInputType = {
+    limit?: true
+  }
+
   export type CompanyMinAggregateInputType = {
     id?: true
+    gid?: true
     name?: true
+    limit?: true
   }
 
   export type CompanyMaxAggregateInputType = {
     id?: true
+    gid?: true
     name?: true
+    limit?: true
   }
 
   export type CompanyCountAggregateInputType = {
     id?: true
+    gid?: true
     name?: true
+    limit?: true
     _all?: true
   }
 
@@ -4364,6 +5408,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CompanyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CompanySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CompanyMinAggregateInputType
@@ -4394,6 +5450,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CompanyCountAggregateInputType | true
+    _avg?: CompanyAvgAggregateInputType
+    _sum?: CompanySumAggregateInputType
     _min?: CompanyMinAggregateInputType
     _max?: CompanyMaxAggregateInputType
   }
@@ -4401,8 +5459,12 @@ export namespace Prisma {
 
   export type CompanyGroupByOutputType = {
     id: string
+    gid: string | null
     name: string
+    limit: number
     _count: CompanyCountAggregateOutputType | null
+    _avg: CompanyAvgAggregateOutputType | null
+    _sum: CompanySumAggregateOutputType | null
     _min: CompanyMinAggregateOutputType | null
     _max: CompanyMaxAggregateOutputType | null
   }
@@ -4423,9 +5485,11 @@ export namespace Prisma {
 
   export type CompanySelect = {
     id?: boolean
+    gid?: boolean
     name?: boolean
     address?: boolean | AddressArgs
     phone?: boolean | TPhoneArgs
+    limit?: boolean
     users?: boolean | Company$usersArgs
     historis?: boolean | Company$historisArgs
     _count?: boolean | CompanyCountOutputTypeArgs
@@ -5506,6 +6570,7 @@ export namespace Prisma {
     company?: boolean | CompanyArgs
     trackers?: boolean | User$trackersArgs
     historis?: boolean | User$historisArgs
+    devices?: boolean | User$devicesArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -5514,6 +6579,7 @@ export namespace Prisma {
     company?: boolean | CompanyArgs
     trackers?: boolean | User$trackersArgs
     historis?: boolean | User$historisArgs
+    devices?: boolean | User$devicesArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -5527,6 +6593,7 @@ export namespace Prisma {
         P extends 'company' ? CompanyGetPayload<S['include'][P]> | null :
         P extends 'trackers' ? Array < HistoriGetPayload<S['include'][P]>>  :
         P extends 'historis' ? Array < HistoriGetPayload<S['include'][P]>>  :
+        P extends 'devices' ? Array < DeviceGetPayload<S['include'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (UserArgs | UserFindManyArgs)
@@ -5535,6 +6602,7 @@ export namespace Prisma {
         P extends 'company' ? CompanyGetPayload<S['select'][P]> | null :
         P extends 'trackers' ? Array < HistoriGetPayload<S['select'][P]>>  :
         P extends 'historis' ? Array < HistoriGetPayload<S['select'][P]>>  :
+        P extends 'devices' ? Array < DeviceGetPayload<S['select'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof User ? User[P] : never
   } 
       : User
@@ -5939,6 +7007,8 @@ export namespace Prisma {
     trackers<T extends User$trackersArgs= {}>(args?: Subset<T, User$trackersArgs>): Prisma.PrismaPromise<Array<HistoriGetPayload<T>>| Null>;
 
     historis<T extends User$historisArgs= {}>(args?: Subset<T, User$historisArgs>): Prisma.PrismaPromise<Array<HistoriGetPayload<T>>| Null>;
+
+    devices<T extends User$devicesArgs= {}>(args?: Subset<T, User$devicesArgs>): Prisma.PrismaPromise<Array<DeviceGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -6363,6 +7433,27 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: Enumerable<HistoriScalarFieldEnum>
+  }
+
+
+  /**
+   * User.devices
+   */
+  export type User$devicesArgs = {
+    /**
+     * Select specific fields to fetch from the Device
+     */
+    select?: DeviceSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DeviceInclude | null
+    where?: DeviceWhereInput
+    orderBy?: Enumerable<DeviceOrderByWithRelationInput>
+    cursor?: DeviceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Enumerable<DeviceScalarFieldEnum>
   }
 
 
@@ -22257,10 +23348,23 @@ export namespace Prisma {
 
   export const CompanyScalarFieldEnum: {
     id: 'id',
-    name: 'name'
+    gid: 'gid',
+    name: 'name',
+    limit: 'limit'
   };
 
   export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+  export const DeviceScalarFieldEnum: {
+    id: 'id',
+    uuid: 'uuid',
+    model: 'model',
+    manufacturer: 'manufacturer',
+    userId: 'userId'
+  };
+
+  export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
 
 
   export const FileScalarFieldEnum: {
@@ -22604,23 +23708,74 @@ export namespace Prisma {
     fileId?: StringNullableWithAggregatesFilter | string | null
   }
 
+  export type DeviceWhereInput = {
+    AND?: Enumerable<DeviceWhereInput>
+    OR?: Enumerable<DeviceWhereInput>
+    NOT?: Enumerable<DeviceWhereInput>
+    id?: StringFilter | string
+    uuid?: StringFilter | string
+    model?: StringFilter | string
+    manufacturer?: StringFilter | string
+    userId?: StringFilter | string
+    user?: XOR<UserRelationFilter, UserWhereInput>
+  }
+
+  export type DeviceOrderByWithRelationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    model?: SortOrder
+    manufacturer?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type DeviceWhereUniqueInput = {
+    id?: string
+  }
+
+  export type DeviceOrderByWithAggregationInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    model?: SortOrder
+    manufacturer?: SortOrder
+    userId?: SortOrder
+    _count?: DeviceCountOrderByAggregateInput
+    _max?: DeviceMaxOrderByAggregateInput
+    _min?: DeviceMinOrderByAggregateInput
+  }
+
+  export type DeviceScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<DeviceScalarWhereWithAggregatesInput>
+    OR?: Enumerable<DeviceScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<DeviceScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    uuid?: StringWithAggregatesFilter | string
+    model?: StringWithAggregatesFilter | string
+    manufacturer?: StringWithAggregatesFilter | string
+    userId?: StringWithAggregatesFilter | string
+  }
+
   export type CompanyWhereInput = {
     AND?: Enumerable<CompanyWhereInput>
     OR?: Enumerable<CompanyWhereInput>
     NOT?: Enumerable<CompanyWhereInput>
     id?: StringFilter | string
+    gid?: StringNullableFilter | string | null
     name?: StringFilter | string
     address?: XOR<AddressCompositeFilter, AddressObjectEqualityInput>
     phone?: XOR<TPhoneNullableCompositeFilter, TPhoneObjectEqualityInput> | null
+    limit?: IntFilter | number
     users?: UserListRelationFilter
     historis?: HistoriListRelationFilter
   }
 
   export type CompanyOrderByWithRelationInput = {
     id?: SortOrder
+    gid?: SortOrder
     name?: SortOrder
     address?: AddressOrderByInput
     phone?: TPhoneOrderByInput
+    limit?: SortOrder
     users?: UserOrderByRelationAggregateInput
     historis?: HistoriOrderByRelationAggregateInput
   }
@@ -22631,10 +23786,14 @@ export namespace Prisma {
 
   export type CompanyOrderByWithAggregationInput = {
     id?: SortOrder
+    gid?: SortOrder
     name?: SortOrder
+    limit?: SortOrder
     _count?: CompanyCountOrderByAggregateInput
+    _avg?: CompanyAvgOrderByAggregateInput
     _max?: CompanyMaxOrderByAggregateInput
     _min?: CompanyMinOrderByAggregateInput
+    _sum?: CompanySumOrderByAggregateInput
   }
 
   export type CompanyScalarWhereWithAggregatesInput = {
@@ -22642,7 +23801,9 @@ export namespace Prisma {
     OR?: Enumerable<CompanyScalarWhereWithAggregatesInput>
     NOT?: Enumerable<CompanyScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    gid?: StringNullableWithAggregatesFilter | string | null
     name?: StringWithAggregatesFilter | string
+    limit?: IntWithAggregatesFilter | number
   }
 
   export type UserWhereInput = {
@@ -22661,6 +23822,7 @@ export namespace Prisma {
     company?: XOR<CompanyRelationFilter, CompanyWhereInput> | null
     trackers?: HistoriListRelationFilter
     historis?: HistoriListRelationFilter
+    devices?: DeviceListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -22676,6 +23838,7 @@ export namespace Prisma {
     company?: CompanyOrderByWithRelationInput
     trackers?: HistoriOrderByRelationAggregateInput
     historis?: HistoriOrderByRelationAggregateInput
+    devices?: DeviceOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = {
@@ -23654,57 +24817,122 @@ export namespace Prisma {
     fileId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type DeviceCreateInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+    user: UserCreateNestedOneWithoutDevicesInput
+  }
+
+  export type DeviceUncheckedCreateInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+    userId: string
+  }
+
+  export type DeviceUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutDevicesNestedInput
+  }
+
+  export type DeviceUncheckedUpdateInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeviceCreateManyInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+    userId: string
+  }
+
+  export type DeviceUpdateManyMutationInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeviceUncheckedUpdateManyInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type CompanyCreateInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     users?: UserCreateNestedManyWithoutCompanyInput
     historis?: HistoriCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     users?: UserUncheckedCreateNestedManyWithoutCompanyInput
     historis?: HistoriUncheckedCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUpdateInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     users?: UserUpdateManyWithoutCompanyNestedInput
     historis?: HistoriUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     users?: UserUncheckedUpdateManyWithoutCompanyNestedInput
     historis?: HistoriUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyCreateManyInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
   }
 
   export type CompanyUpdateManyMutationInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
   }
 
   export type CompanyUncheckedUpdateManyInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
   }
 
   export type UserCreateInput = {
@@ -23719,6 +24947,7 @@ export namespace Prisma {
     company?: CompanyCreateNestedOneWithoutUsersInput
     trackers?: HistoriCreateNestedManyWithoutRefInput
     historis?: HistoriCreateNestedManyWithoutUserInput
+    devices?: DeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -23733,6 +24962,7 @@ export namespace Prisma {
     companyId?: string | null
     trackers?: HistoriUncheckedCreateNestedManyWithoutRefInput
     historis?: HistoriUncheckedCreateNestedManyWithoutUserInput
+    devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -23746,6 +24976,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneWithoutUsersNestedInput
     trackers?: HistoriUpdateManyWithoutRefNestedInput
     historis?: HistoriUpdateManyWithoutUserNestedInput
+    devices?: DeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -23759,6 +24990,7 @@ export namespace Prisma {
     companyId?: NullableStringFieldUpdateOperationsInput | string | null
     trackers?: HistoriUncheckedUpdateManyWithoutRefNestedInput
     historis?: HistoriUncheckedUpdateManyWithoutUserNestedInput
+    devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -25035,6 +26267,30 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
+  export type DeviceCountOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    model?: SortOrder
+    manufacturer?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type DeviceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    model?: SortOrder
+    manufacturer?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type DeviceMinOrderByAggregateInput = {
+    id?: SortOrder
+    uuid?: SortOrder
+    model?: SortOrder
+    manufacturer?: SortOrder
+    userId?: SortOrder
+  }
+
   export type AddressCompositeFilter = {
     equals?: AddressObjectEqualityInput
     is?: AddressWhereInput
@@ -25061,6 +26317,17 @@ export namespace Prisma {
   export type TPhoneObjectEqualityInput = {
     code: string
     number: number
+  }
+
+  export type IntFilter = {
+    equals?: number
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
   }
 
   export type UserListRelationFilter = {
@@ -25100,17 +26367,47 @@ export namespace Prisma {
 
   export type CompanyCountOrderByAggregateInput = {
     id?: SortOrder
+    gid?: SortOrder
     name?: SortOrder
+    limit?: SortOrder
+  }
+
+  export type CompanyAvgOrderByAggregateInput = {
+    limit?: SortOrder
   }
 
   export type CompanyMaxOrderByAggregateInput = {
     id?: SortOrder
+    gid?: SortOrder
     name?: SortOrder
+    limit?: SortOrder
   }
 
   export type CompanyMinOrderByAggregateInput = {
     id?: SortOrder
+    gid?: SortOrder
     name?: SortOrder
+    limit?: SortOrder
+  }
+
+  export type CompanySumOrderByAggregateInput = {
+    limit?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
   }
 
   export type EnumUserRoleFilter = {
@@ -25123,6 +26420,16 @@ export namespace Prisma {
   export type BoolFilter = {
     equals?: boolean
     not?: NestedBoolFilter | boolean
+  }
+
+  export type DeviceListRelationFilter = {
+    every?: DeviceWhereInput
+    some?: DeviceWhereInput
+    none?: DeviceWhereInput
+  }
+
+  export type DeviceOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -25179,17 +26486,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter
   }
 
-  export type IntFilter = {
-    equals?: number
-    in?: Enumerable<number> | number
-    notIn?: Enumerable<number> | number
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
-  }
-
   export type TemplateFieldListRelationFilter = {
     every?: TemplateFieldWhereInput
     some?: TemplateFieldWhereInput
@@ -25243,22 +26539,6 @@ export namespace Prisma {
     size?: SortOrder
     width?: SortOrder
     height?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number> | number
-    notIn?: Enumerable<number> | number
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
   }
 
   export type FileListRelationFilter = {
@@ -26204,6 +27484,20 @@ export namespace Prisma {
     set?: string
   }
 
+  export type UserCreateNestedOneWithoutDevicesInput = {
+    create?: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDevicesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutDevicesNestedInput = {
+    create?: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDevicesInput
+    upsert?: UserUpsertWithoutDevicesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutDevicesInput, UserUncheckedUpdateWithoutDevicesInput>
+  }
+
   export type AddressCreateEnvelopeInput = {
     set?: AddressCreateInput
   }
@@ -26264,6 +27558,14 @@ export namespace Prisma {
     set?: TPhoneCreateInput | null
     upsert?: TPhoneUpsertInput
     unset?: boolean
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UserUpdateManyWithoutCompanyNestedInput = {
@@ -26342,6 +27644,13 @@ export namespace Prisma {
     connect?: Enumerable<HistoriWhereUniqueInput>
   }
 
+  export type DeviceCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    connect?: Enumerable<DeviceWhereUniqueInput>
+  }
+
   export type HistoriUncheckedCreateNestedManyWithoutRefInput = {
     create?: XOR<Enumerable<HistoriCreateWithoutRefInput>, Enumerable<HistoriUncheckedCreateWithoutRefInput>>
     connectOrCreate?: Enumerable<HistoriCreateOrConnectWithoutRefInput>
@@ -26354,6 +27663,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<HistoriCreateOrConnectWithoutUserInput>
     createMany?: HistoriCreateManyUserInputEnvelope
     connect?: Enumerable<HistoriWhereUniqueInput>
+  }
+
+  export type DeviceUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    connect?: Enumerable<DeviceWhereUniqueInput>
   }
 
   export type EnumUserRoleFieldUpdateOperationsInput = {
@@ -26402,6 +27718,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<HistoriScalarWhereInput>
   }
 
+  export type DeviceUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<DeviceUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    set?: Enumerable<DeviceWhereUniqueInput>
+    disconnect?: Enumerable<DeviceWhereUniqueInput>
+    delete?: Enumerable<DeviceWhereUniqueInput>
+    connect?: Enumerable<DeviceWhereUniqueInput>
+    update?: Enumerable<DeviceUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<DeviceUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<DeviceScalarWhereInput>
+  }
+
   export type HistoriUncheckedUpdateManyWithoutRefNestedInput = {
     create?: XOR<Enumerable<HistoriCreateWithoutRefInput>, Enumerable<HistoriUncheckedCreateWithoutRefInput>>
     connectOrCreate?: Enumerable<HistoriCreateOrConnectWithoutRefInput>
@@ -26428,6 +27758,20 @@ export namespace Prisma {
     update?: Enumerable<HistoriUpdateWithWhereUniqueWithoutUserInput>
     updateMany?: Enumerable<HistoriUpdateManyWithWhereWithoutUserInput>
     deleteMany?: Enumerable<HistoriScalarWhereInput>
+  }
+
+  export type DeviceUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<DeviceUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    set?: Enumerable<DeviceWhereUniqueInput>
+    disconnect?: Enumerable<DeviceWhereUniqueInput>
+    delete?: Enumerable<DeviceWhereUniqueInput>
+    connect?: Enumerable<DeviceWhereUniqueInput>
+    update?: Enumerable<DeviceUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<DeviceUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<DeviceScalarWhereInput>
   }
 
   export type ImageCreateNestedOneWithoutFilesInput = {
@@ -26462,14 +27806,6 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<TemplateFieldCreateOrConnectWithoutImageInput>
     createMany?: TemplateFieldCreateManyImageInputEnvelope
     connect?: Enumerable<TemplateFieldWhereUniqueInput>
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type ImageUpdateOneRequiredWithoutFilesNestedInput = {
@@ -28302,6 +29638,33 @@ export namespace Prisma {
     latitude?: SortOrder
   }
 
+  export type NestedIntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type NestedFloatFilter = {
+    equals?: number
+    in?: Enumerable<number> | number
+    notIn?: Enumerable<number> | number
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatFilter | number
+  }
+
   export type NestedEnumUserRoleFilter = {
     equals?: UserRole
     in?: Enumerable<UserRole>
@@ -28330,33 +29693,6 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedBoolFilter
     _max?: NestedBoolFilter
-  }
-
-  export type NestedIntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number> | number
-    notIn?: Enumerable<number> | number
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
-  }
-
-  export type NestedFloatFilter = {
-    equals?: number
-    in?: Enumerable<number> | number
-    notIn?: Enumerable<number> | number
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatFilter | number
   }
 
   export type NestedEnumOptionTypeFilter = {
@@ -28576,6 +29912,7 @@ export namespace Prisma {
     active: boolean
     company?: CompanyCreateNestedOneWithoutUsersInput
     historis?: HistoriCreateNestedManyWithoutUserInput
+    devices?: DeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTrackersInput = {
@@ -28589,6 +29926,7 @@ export namespace Prisma {
     active: boolean
     companyId?: string | null
     historis?: HistoriUncheckedCreateNestedManyWithoutUserInput
+    devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTrackersInput = {
@@ -28607,6 +29945,7 @@ export namespace Prisma {
     active: boolean
     company?: CompanyCreateNestedOneWithoutUsersInput
     trackers?: HistoriCreateNestedManyWithoutRefInput
+    devices?: DeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutHistorisInput = {
@@ -28620,6 +29959,7 @@ export namespace Prisma {
     active: boolean
     companyId?: string | null
     trackers?: HistoriUncheckedCreateNestedManyWithoutRefInput
+    devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutHistorisInput = {
@@ -28629,17 +29969,21 @@ export namespace Prisma {
 
   export type CompanyCreateWithoutHistorisInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     users?: UserCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutHistorisInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     users?: UserUncheckedCreateNestedManyWithoutCompanyInput
   }
 
@@ -28865,6 +30209,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     company?: CompanyUpdateOneWithoutUsersNestedInput
     historis?: HistoriUpdateManyWithoutUserNestedInput
+    devices?: DeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTrackersInput = {
@@ -28877,6 +30222,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     companyId?: NullableStringFieldUpdateOperationsInput | string | null
     historis?: HistoriUncheckedUpdateManyWithoutUserNestedInput
+    devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutHistorisInput = {
@@ -28894,6 +30240,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     company?: CompanyUpdateOneWithoutUsersNestedInput
     trackers?: HistoriUpdateManyWithoutRefNestedInput
+    devices?: DeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutHistorisInput = {
@@ -28906,6 +30253,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     companyId?: NullableStringFieldUpdateOperationsInput | string | null
     trackers?: HistoriUncheckedUpdateManyWithoutRefNestedInput
+    devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CompanyUpsertWithoutHistorisInput = {
@@ -28914,16 +30262,20 @@ export namespace Prisma {
   }
 
   export type CompanyUpdateWithoutHistorisInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     users?: UserUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutHistorisInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     users?: UserUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
@@ -29113,6 +30465,70 @@ export namespace Prisma {
     fields?: TemplateFieldUncheckedUpdateManyWithoutImageNestedInput
   }
 
+  export type UserCreateWithoutDevicesInput = {
+    id?: string
+    name: string
+    email: string
+    username: string
+    password: string
+    passhash: string
+    role: UserRole
+    active: boolean
+    company?: CompanyCreateNestedOneWithoutUsersInput
+    trackers?: HistoriCreateNestedManyWithoutRefInput
+    historis?: HistoriCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutDevicesInput = {
+    id?: string
+    name: string
+    email: string
+    username: string
+    password: string
+    passhash: string
+    role: UserRole
+    active: boolean
+    companyId?: string | null
+    trackers?: HistoriUncheckedCreateNestedManyWithoutRefInput
+    historis?: HistoriUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDevicesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+  }
+
+  export type UserUpsertWithoutDevicesInput = {
+    update: XOR<UserUpdateWithoutDevicesInput, UserUncheckedUpdateWithoutDevicesInput>
+    create: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+  }
+
+  export type UserUpdateWithoutDevicesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    passhash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | UserRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    company?: CompanyUpdateOneWithoutUsersNestedInput
+    trackers?: HistoriUpdateManyWithoutRefNestedInput
+    historis?: HistoriUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDevicesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    passhash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | UserRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    companyId?: NullableStringFieldUpdateOperationsInput | string | null
+    trackers?: HistoriUncheckedUpdateManyWithoutRefNestedInput
+    historis?: HistoriUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type CoordinateCreateInput = {
     longitude: number
     latitude: number
@@ -29129,6 +30545,7 @@ export namespace Prisma {
     active: boolean
     trackers?: HistoriCreateNestedManyWithoutRefInput
     historis?: HistoriCreateNestedManyWithoutUserInput
+    devices?: DeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyInput = {
@@ -29142,6 +30559,7 @@ export namespace Prisma {
     active: boolean
     trackers?: HistoriUncheckedCreateNestedManyWithoutRefInput
     historis?: HistoriUncheckedCreateNestedManyWithoutUserInput
+    devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyInput = {
@@ -29287,17 +30705,21 @@ export namespace Prisma {
 
   export type CompanyCreateWithoutUsersInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     historis?: HistoriCreateNestedManyWithoutCompanyInput
   }
 
   export type CompanyUncheckedCreateWithoutUsersInput = {
     id?: string
+    gid?: string | null
     name: string
     address: XOR<AddressCreateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableCreateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: number
     historis?: HistoriUncheckedCreateNestedManyWithoutCompanyInput
   }
 
@@ -29400,22 +30822,49 @@ export namespace Prisma {
     data: Enumerable<HistoriCreateManyUserInput>
   }
 
+  export type DeviceCreateWithoutUserInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+  }
+
+  export type DeviceUncheckedCreateWithoutUserInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+  }
+
+  export type DeviceCreateOrConnectWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    create: XOR<DeviceCreateWithoutUserInput, DeviceUncheckedCreateWithoutUserInput>
+  }
+
+  export type DeviceCreateManyUserInputEnvelope = {
+    data: Enumerable<DeviceCreateManyUserInput>
+  }
+
   export type CompanyUpsertWithoutUsersInput = {
     update: XOR<CompanyUpdateWithoutUsersInput, CompanyUncheckedUpdateWithoutUsersInput>
     create: XOR<CompanyCreateWithoutUsersInput, CompanyUncheckedCreateWithoutUsersInput>
   }
 
   export type CompanyUpdateWithoutUsersInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     historis?: HistoriUpdateManyWithoutCompanyNestedInput
   }
 
   export type CompanyUncheckedUpdateWithoutUsersInput = {
+    gid?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     address?: XOR<AddressUpdateEnvelopeInput, AddressCreateInput>
     phone?: XOR<TPhoneNullableUpdateEnvelopeInput, TPhoneCreateInput> | null
+    limit?: IntFieldUpdateOperationsInput | number
     historis?: HistoriUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
@@ -29449,6 +30898,33 @@ export namespace Prisma {
   export type HistoriUpdateManyWithWhereWithoutUserInput = {
     where: HistoriScalarWhereInput
     data: XOR<HistoriUpdateManyMutationInput, HistoriUncheckedUpdateManyWithoutHistorisInput>
+  }
+
+  export type DeviceUpsertWithWhereUniqueWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    update: XOR<DeviceUpdateWithoutUserInput, DeviceUncheckedUpdateWithoutUserInput>
+    create: XOR<DeviceCreateWithoutUserInput, DeviceUncheckedCreateWithoutUserInput>
+  }
+
+  export type DeviceUpdateWithWhereUniqueWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    data: XOR<DeviceUpdateWithoutUserInput, DeviceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type DeviceUpdateManyWithWhereWithoutUserInput = {
+    where: DeviceScalarWhereInput
+    data: XOR<DeviceUpdateManyMutationInput, DeviceUncheckedUpdateManyWithoutDevicesInput>
+  }
+
+  export type DeviceScalarWhereInput = {
+    AND?: Enumerable<DeviceScalarWhereInput>
+    OR?: Enumerable<DeviceScalarWhereInput>
+    NOT?: Enumerable<DeviceScalarWhereInput>
+    id?: StringFilter | string
+    uuid?: StringFilter | string
+    model?: StringFilter | string
+    manufacturer?: StringFilter | string
+    userId?: StringFilter | string
   }
 
   export type ImageCreateWithoutFilesInput = {
@@ -32247,6 +33723,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     trackers?: HistoriUpdateManyWithoutRefNestedInput
     historis?: HistoriUpdateManyWithoutUserNestedInput
+    devices?: DeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyInput = {
@@ -32259,6 +33736,7 @@ export namespace Prisma {
     active?: BoolFieldUpdateOperationsInput | boolean
     trackers?: HistoriUncheckedUpdateManyWithoutRefNestedInput
     historis?: HistoriUncheckedUpdateManyWithoutUserNestedInput
+    devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutUsersInput = {
@@ -32363,6 +33841,13 @@ export namespace Prisma {
     fileId?: string | null
   }
 
+  export type DeviceCreateManyUserInput = {
+    id?: string
+    uuid: string
+    model: string
+    manufacturer: string
+  }
+
   export type HistoriUpdateWithoutRefInput = {
     type?: EnumHistoriTypeFieldUpdateOperationsInput | HistoriType
     model?: EnumHistoriModelFieldUpdateOperationsInput | HistoriModel
@@ -32451,6 +33936,24 @@ export namespace Prisma {
     templateId?: NullableStringFieldUpdateOperationsInput | string | null
     imageId?: NullableStringFieldUpdateOperationsInput | string | null
     fileId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeviceUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeviceUncheckedUpdateWithoutUserInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeviceUncheckedUpdateManyWithoutDevicesInput = {
+    uuid?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    manufacturer?: StringFieldUpdateOperationsInput | string
   }
 
   export type HistoriCreateManyFileInput = {

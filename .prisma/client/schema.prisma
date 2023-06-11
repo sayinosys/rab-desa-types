@@ -83,11 +83,24 @@ type TPhone {
   number Int
 }
 
+model Device {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  uuid         String
+  model        String
+  manufacturer String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       String @db.ObjectId
+
+  @@map("devices")
+}
+
 model Company {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  gid      String?
   name     String
   address  Address
   phone    TPhone?
+  limit    Int       @default(1)
   users    User[]
   historis Histori[]
 
@@ -113,6 +126,7 @@ model User {
   companyId String?   @db.ObjectId
   trackers  Histori[] @relation("histori_user_tracker")
   historis  Histori[]
+  devices   Device[]
 
   @@map("users")
 }
