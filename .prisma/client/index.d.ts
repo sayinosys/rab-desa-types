@@ -83,6 +83,16 @@ export type TProperty = {
 }
 
 /**
+ * Model TAround
+ * 
+ */
+export type TAround = {
+  long: string | null
+  width: string | null
+  height: string | null
+}
+
+/**
  * Model TFieldList
  * 
  */
@@ -336,6 +346,7 @@ export type TemplateData = {
   step: number
   publish: boolean
   templateId: string
+  around: TAround | null
   properties: TProperty
 }
 
@@ -2615,6 +2626,107 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well.
      */
     include?: TPropertyInclude | null
+  }
+
+
+
+  /**
+   * Model TAround
+   */
+
+
+
+
+
+  export type TAroundSelect = {
+    long?: boolean
+    width?: boolean
+    height?: boolean
+  }
+
+
+  export type TAroundGetPayload<S extends boolean | null | undefined | TAroundArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? TAround :
+    S extends undefined ? never :
+    S extends { include: any } & (TAroundArgs)
+    ? TAround 
+    : S extends { select: any } & (TAroundArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof TAround ? TAround[P] : never
+  } 
+      : TAround
+
+
+
+  export interface TAroundDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+
+
+
+
+
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TAround.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__TAroundClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * TAround without action
+   */
+  export type TAroundArgs = {
+    /**
+     * Select specific fields to fetch from the TAround
+     */
+    select?: TAroundSelect | null
   }
 
 
@@ -18405,6 +18517,7 @@ export namespace Prisma {
     step?: boolean
     publish?: boolean
     templateId?: boolean
+    around?: boolean | TAroundArgs
     properties?: boolean | TPropertyArgs
     active?: boolean | TemplateArgs
     template?: boolean | TemplateArgs
@@ -18444,6 +18557,7 @@ export namespace Prisma {
     : S extends { select: any } & (TemplateDataArgs | TemplateDataFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
+        P extends 'around' ? TAroundGetPayload<S['select'][P]> | null :
         P extends 'properties' ? TPropertyGetPayload<S['select'][P]> :
         P extends 'active' ? TemplateGetPayload<S['select'][P]> | null :
         P extends 'template' ? TemplateGetPayload<S['select'][P]> :
@@ -18849,6 +18963,8 @@ export namespace Prisma {
     private _requestPromise?;
     readonly [Symbol.toStringTag]: 'PrismaPromise';
     constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+    around<T extends TAroundArgs= {}>(args?: Subset<T, TAroundArgs>): Prisma__TAroundClient<TAroundGetPayload<T> | Null>;
 
     properties<T extends TPropertyArgs= {}>(args?: Subset<T, TPropertyArgs>): Prisma__TPropertyClient<TPropertyGetPayload<T> | Null>;
 
@@ -24433,6 +24549,7 @@ export namespace Prisma {
     step?: IntFilter | number
     publish?: BoolFilter | boolean
     templateId?: StringFilter | string
+    around?: XOR<TAroundNullableCompositeFilter, TAroundObjectEqualityInput> | null
     properties?: XOR<TPropertyCompositeFilter, TPropertyObjectEqualityInput>
     active?: XOR<TemplateRelationFilter, TemplateWhereInput> | null
     template?: XOR<TemplateRelationFilter, TemplateWhereInput>
@@ -24447,6 +24564,7 @@ export namespace Prisma {
     step?: SortOrder
     publish?: SortOrder
     templateId?: SortOrder
+    around?: TAroundOrderByInput
     properties?: TPropertyOrderByInput
     active?: TemplateOrderByWithRelationInput
     template?: TemplateOrderByWithRelationInput
@@ -25646,6 +25764,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     template: TemplateCreateNestedOneWithoutRecordsInput
@@ -25660,6 +25779,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
@@ -25671,6 +25791,7 @@ export namespace Prisma {
   export type TemplateDataUpdateInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
@@ -25684,6 +25805,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
@@ -25697,12 +25819,14 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
   }
 
   export type TemplateDataUpdateManyMutationInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
   }
 
@@ -25710,6 +25834,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
   }
 
@@ -26962,6 +27087,19 @@ export namespace Prisma {
     workId?: SortOrder
   }
 
+  export type TAroundNullableCompositeFilter = {
+    equals?: TAroundObjectEqualityInput | null
+    is?: TAroundWhereInput | null
+    isNot?: TAroundWhereInput | null
+    isSet?: boolean
+  }
+
+  export type TAroundObjectEqualityInput = {
+    long?: string | null
+    width?: string | null
+    height?: string | null
+  }
+
   export type TPropertyCompositeFilter = {
     equals?: TPropertyObjectEqualityInput
     is?: TPropertyWhereInput
@@ -26988,6 +27126,12 @@ export namespace Prisma {
     every?: TemplateDEDWhereInput
     some?: TemplateDEDWhereInput
     none?: TemplateDEDWhereInput
+  }
+
+  export type TAroundOrderByInput = {
+    long?: SortOrder
+    width?: SortOrder
+    height?: SortOrder
   }
 
   export type TPropertyOrderByInput = {
@@ -29027,6 +29171,16 @@ export namespace Prisma {
     deleteMany?: Enumerable<StageScalarWhereInput>
   }
 
+  export type TAroundNullableCreateEnvelopeInput = {
+    set?: TAroundCreateInput | null
+  }
+
+  export type TAroundCreateInput = {
+    long?: string | null
+    width?: string | null
+    height?: string | null
+  }
+
   export type TPropertyCreateEnvelopeInput = {
     set?: TPropertyCreateInput
   }
@@ -29113,6 +29267,12 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<TemplateFieldCreateOrConnectWithoutDataInput>
     createMany?: TemplateFieldCreateManyDataInputEnvelope
     connect?: Enumerable<TemplateFieldWhereUniqueInput>
+  }
+
+  export type TAroundNullableUpdateEnvelopeInput = {
+    set?: TAroundCreateInput | null
+    upsert?: TAroundUpsertInput
+    unset?: boolean
   }
 
   export type TPropertyUpdateEnvelopeInput = {
@@ -29760,6 +29920,15 @@ export namespace Prisma {
     _sum?: NestedFloatFilter
     _min?: NestedFloatFilter
     _max?: NestedFloatFilter
+  }
+
+  export type TAroundWhereInput = {
+    AND?: Enumerable<TAroundWhereInput>
+    OR?: Enumerable<TAroundWhereInput>
+    NOT?: Enumerable<TAroundWhereInput>
+    long?: StringNullableFilter | string | null
+    width?: StringNullableFilter | string | null
+    height?: StringNullableFilter | string | null
   }
 
   export type TPropertyWhereInput = {
@@ -32505,6 +32674,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     template: TemplateCreateNestedOneWithoutRecordsInput
     spaces?: SpaceCreateNestedManyWithoutRefInput
@@ -32518,6 +32688,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
     works?: TemplateWorkUncheckedCreateNestedManyWithoutDataInput
@@ -32534,6 +32705,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     spaces?: SpaceCreateNestedManyWithoutRefInput
@@ -32546,6 +32718,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
@@ -32618,6 +32791,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutActiveInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
     spaces?: SpaceUpdateManyWithoutRefNestedInput
@@ -32630,6 +32804,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
     works?: TemplateWorkUncheckedUpdateManyWithoutDataNestedInput
@@ -32835,6 +33010,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     template: TemplateCreateNestedOneWithoutRecordsInput
@@ -32848,6 +33024,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
@@ -32961,6 +33138,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutWorksInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
@@ -32973,6 +33151,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
@@ -33205,6 +33384,11 @@ export namespace Prisma {
     data: Enumerable<TemplateFieldCreateManyDataInput>
   }
 
+  export type TAroundUpsertInput = {
+    set: TAroundCreateInput | null
+    update: TAroundUpdateInput
+  }
+
   export type TPropertyUpdateInput = {
     images?: NullableStringFieldUpdateOperationsInput | string | null
     intros?: XOR<TPropertyIntroListUpdateEnvelopeInput, Enumerable<TPropertyIntroCreateInput>>
@@ -33335,6 +33519,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     template: TemplateCreateNestedOneWithoutRecordsInput
@@ -33348,6 +33533,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
@@ -33406,6 +33592,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutFieldsInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
@@ -33418,6 +33605,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
@@ -33456,6 +33644,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     template: TemplateCreateNestedOneWithoutRecordsInput
@@ -33469,6 +33658,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     spaces?: SpaceUncheckedCreateNestedManyWithoutRefInput
@@ -33498,6 +33688,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutDedsInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
@@ -33510,6 +33701,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
@@ -33521,6 +33713,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateCreateNestedOneWithoutActiveInput
     template: TemplateCreateNestedOneWithoutRecordsInput
@@ -33534,6 +33727,7 @@ export namespace Prisma {
     step?: number
     publish?: boolean
     templateId: string
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedCreateNestedOneWithoutActiveInput
     works?: TemplateWorkUncheckedCreateNestedManyWithoutDataInput
@@ -33567,6 +33761,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutSpacesInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     template?: TemplateUpdateOneRequiredWithoutRecordsNestedInput
@@ -33579,6 +33774,7 @@ export namespace Prisma {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
     templateId?: StringFieldUpdateOperationsInput | string
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     works?: TemplateWorkUncheckedUpdateManyWithoutDataNestedInput
@@ -34830,6 +35026,7 @@ export namespace Prisma {
     id?: string
     step?: number
     publish?: boolean
+    around?: XOR<TAroundNullableCreateEnvelopeInput, TAroundCreateInput> | null
     properties: XOR<TPropertyCreateEnvelopeInput, TPropertyCreateInput>
   }
 
@@ -34855,6 +35052,7 @@ export namespace Prisma {
   export type TemplateDataUpdateWithoutTemplateInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUpdateManyWithoutRefNestedInput
@@ -34866,6 +35064,7 @@ export namespace Prisma {
   export type TemplateDataUncheckedUpdateWithoutTemplateInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
     active?: TemplateUncheckedUpdateOneWithoutActiveNestedInput
     spaces?: SpaceUncheckedUpdateManyWithoutRefNestedInput
@@ -34877,6 +35076,7 @@ export namespace Prisma {
   export type TemplateDataUncheckedUpdateManyWithoutRecordsInput = {
     step?: IntFieldUpdateOperationsInput | number
     publish?: BoolFieldUpdateOperationsInput | boolean
+    around?: XOR<TAroundNullableUpdateEnvelopeInput, TAroundCreateInput> | null
     properties?: XOR<TPropertyUpdateEnvelopeInput, TPropertyCreateInput>
   }
 
@@ -35033,6 +35233,12 @@ export namespace Prisma {
     imageId?: string | null
     imageUrl?: string | null
     lists?: XOR<TFieldListListCreateEnvelopeInput, Enumerable<TFieldListCreateInput>>
+  }
+
+  export type TAroundUpdateInput = {
+    long?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TPropertyIntroListUpdateEnvelopeInput = {

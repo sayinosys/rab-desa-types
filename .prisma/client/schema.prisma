@@ -328,6 +328,12 @@ type TProperty {
   ppnVal Int              @default(11)
 }
 
+type TAround {
+  long   String? @db.ObjectId
+  width  String? @db.ObjectId
+  height String? @db.ObjectId
+}
+
 model TemplateData {
   id         String          @id @default(auto()) @map("_id") @db.ObjectId
   step       Int             @default(0)
@@ -335,6 +341,7 @@ model TemplateData {
   active     Template?       @relation("template_active")
   template   Template        @relation("template_data_record", fields: [templateId], references: [id])
   templateId String          @db.ObjectId
+  around     TAround?
   spaces     Space[]
   works      TemplateWork[]
   properties TProperty
